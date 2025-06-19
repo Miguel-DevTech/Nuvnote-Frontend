@@ -1,5 +1,6 @@
 import { type FC, useState } from 'react';
 import { BsFlagFill, BsCheckLg, BsTrash, BsPencilSquare, BsSave } from 'react-icons/bs';
+import { motion } from 'framer-motion';
 import './TaskList.css';
 
 interface Task {
@@ -23,9 +24,9 @@ const TaskList: FC<TaskListProps> = ({ tasks, onDelete, onToggleDone, onEdit, on
 
     return (
         <div className="container mt-4">
-        <h4 className="mb-3 text-light">Minhas Tarefas</h4>
+        <h4 className="mb-3 text-dark">Minhas Tarefas</h4>
         {tasks.length === 0 ? (
-            <p className="text-light">Nenhuma tarefa adicionada ainda.</p>
+            <p className="text-dark">Nenhuma tarefa adicionada ainda.</p>
         ) : (
             <div className="row row-cols-1 g-3">
             {tasks.map((task) => {
@@ -33,7 +34,16 @@ const TaskList: FC<TaskListProps> = ({ tasks, onDelete, onToggleDone, onEdit, on
                 const cardClass = `card shadow-sm border-0 transition ${task.done ? 'opacity-50' : ''}`;
 
                 return (
-                <div key={task.id} className="col">
+                <motion.div 
+                    key={task.id} 
+                    className="col"
+                    initial={{ opacity: 1, scale: 1 }}
+                    animate={{
+                        opacity: task.done ? 0.5 : 1,
+                        scale: task.done ? 0.90 : 1,
+                    }}
+                    transition={{ duration: 0.3 }}
+                    >
                     <div className={cardClass}>
                     <div className="card-body d-flex justify-content-between align-items-center">
                         <div className="w-100">
@@ -96,7 +106,7 @@ const TaskList: FC<TaskListProps> = ({ tasks, onDelete, onToggleDone, onEdit, on
                         </div>
                     </div>
                     </div>
-                </div>
+                </motion.div>
                 );
             })}
             </div>
