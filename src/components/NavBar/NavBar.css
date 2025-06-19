@@ -1,0 +1,12 @@
+.navbar {
+  background-color: #212529; /* Dark background */
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+form input::placeholder {
+    color: #ccc;
+}
