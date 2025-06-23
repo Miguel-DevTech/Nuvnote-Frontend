@@ -1,5 +1,5 @@
 // src/pages/TaskManager.tsx
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AddBar from '../components/AddBar/AddBar';
 import NavBar from '../components/NavBar/NavBar';
 import TaskList from '../components/TaskList/TaskList';
@@ -15,6 +15,20 @@ const TaskManager = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [editingId, setEditingId] = useState<number | null>(null);
     const [search, setSearch] = useState('');
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        setLoading(true);
+        const timeout = setTimeout(() => {
+            setTasks([
+                { id: 1, name: "Estudar React", priority: 'alta' },
+                { id: 2, name: "Lavar o carro", priority: 'baixa' }
+            ]);
+            setLoading(false);
+        }, 1500);
+
+        return () => clearTimeout(timeout);
+    }, []);
 
     const addTask = (name: string, priority: string) => {
         const newTask: Task = {
@@ -65,6 +79,7 @@ return (
             onEdit={startEditing}
             onSaveEdit={saveTaskEdit}
             editingId={editingId}
+            loading={loading}
         />
         </div>
     );

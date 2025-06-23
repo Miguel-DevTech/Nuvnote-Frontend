@@ -17,15 +17,23 @@ interface TaskListProps {
     onEdit: (id: number) => void;
     onSaveEdit: (id: number, newName: string) => void;
     editingId: number | null;
+    loading: boolean;
 }
 
-const TaskList: FC<TaskListProps> = ({ tasks, onDelete, onToggleDone, onEdit, onSaveEdit, editingId }) => {
+const TaskList: FC<TaskListProps> = ({ tasks, onDelete, onToggleDone, onEdit, onSaveEdit, editingId, loading }) => {
     const [editedName, setEditedName] = useState('');
 
     return (
         <div className="container mt-4">
         <h4 className="mb-3 text-dark">Minhas Tarefas</h4>
-        {tasks.length === 0 ? (
+        
+        {loading ? (
+        <div className="d-flex justify-content-center align-items-center" style={{ height: '50vh' }}>
+            <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Carregando...</span>
+            </div>
+        </div>
+        ) : tasks.length === 0 ? (
             <p className="text-dark">Nenhuma tarefa adicionada ainda.</p>
         ) : (
             <div className="row row-cols-1 g-3">
