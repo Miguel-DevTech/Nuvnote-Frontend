@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import './TaskList.css';
 
 interface Task {
-    id: number;
+    id: string;
     name: string;
     priority: string;
     done?: boolean;
@@ -12,15 +12,25 @@ interface Task {
 
 interface TaskListProps {
     tasks: Task[];
-    onDelete: (id: number) => void;
-    onToggleDone: (id: number) => void;
-    onEdit: (id: number) => void;
-    onSaveEdit: (id: number, newName: string) => void;
-    editingId: number | null;
+    onDelete: (id: string) => void;
+    onToggleDone: (id: string, currentDone: boolean) => void;
+    onEdit: (id: string) => void;
+    onSaveEdit: (id: string, newName: string) => void;
+    editingId: string | null;
     loading: boolean;
 }
 
-const TaskList: FC<TaskListProps> = ({ tasks, onDelete, onToggleDone, onEdit, onSaveEdit, editingId, loading }) => {
+const TaskList: FC<TaskListProps> = ({ 
+        tasks, 
+        onDelete, 
+        onToggleDone, 
+        onEdit, 
+        onSaveEdit, 
+        editingId, 
+        loading 
+
+    }) => {
+
     const [editedName, setEditedName] = useState('');
 
     return (
@@ -83,7 +93,10 @@ const TaskList: FC<TaskListProps> = ({ tasks, onDelete, onToggleDone, onEdit, on
                             {task.priority}
                         </span>
 
-                        <button className="btn btn-sm btn-outline-success" title="Concluir" onClick={() => onToggleDone(task.id)}>
+                        <button 
+                            className="btn btn-sm btn-outline-success" 
+                            title="Concluir" 
+                            onClick={() => onToggleDone(task.id, task.done ?? false)}>
                             <BsCheckLg />
                         </button>
 

@@ -1,7 +1,22 @@
+// components/LoginPage/Login.tsx
 import { type FC, useState, type FormEvent } from "react";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaEnvelope, FaLock, FaSignInAlt } from "react-icons/fa";
+import { gql, useMutation } from '@apollo/client';
 import './Login.css';
+
+// GraphQL Mutation
+const LOGIN = gql`
+    mutation Login($email: String!, $password: String!) {
+        login(email: $email, password: $password) {
+            user {
+                id
+                email
+            }
+        }
+    }
+`;
+
 
 const LoginPage: FC = () => {
     const [userEmail, setUserEmail] = useState('');
@@ -10,16 +25,35 @@ const LoginPage: FC = () => {
 
     const navigate = useNavigate();
 
+    const [login] = useMutation(LOGIN);
+
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setLoading(true)
+        setLoading(true);
 
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        try {
+            await login({
+            variables: {
+                email: userEmail,
+                password: userPassword,
+            },
+        });
 
-        setLoading(false);
-        navigate('/dashboard');
-        // Aqui você pode chamar o back-end futuramente
+
+            navigate('/dashboard'); // 🍪 token já está no cookie
+        } catch (err: any) {
+            console.error('Login failed:', err);
+            if (err?.graphQLErrors?.length) {
+                alert("Credenciais inválidas.");
+            } else if (err?.networkError) {
+                alert("Erro de rede. Verifique sua conexão.");
+            } else {
+                alert("Erro desconhecido.");
+            }
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -39,6 +73,7 @@ const LoginPage: FC = () => {
                 placeholder="email@example.com"
                 value={userEmail}
                 onChange={(e) => setUserEmail(e.target.value)}
+                autoComplete="email"
                 required
                 disabled={loading}
                 />
@@ -53,6 +88,7 @@ const LoginPage: FC = () => {
                 placeholder="Senha"
                 value={userPassword}
                 onChange={(e) => setUserPassword(e.target.value)}
+                autoComplete="current-password"
                 required
                 disabled={loading}
                 />
@@ -75,7 +111,7 @@ const LoginPage: FC = () => {
             </form>
 
             <p className="mt-4 mb-0 text-muted">
-            Ainda não tem conta? <a href="/register" className="text-decoration-none">Cadastrar</a>
+            Ainda não tem conta? <Link to="/register" className="text-decoration-none">Cadastrar</Link>
             </p>
         </div>
         </div>

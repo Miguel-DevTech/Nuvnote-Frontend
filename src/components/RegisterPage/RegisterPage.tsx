@@ -1,7 +1,19 @@
 import { type FC, useState, type FormEvent } from "react";
 import { FaEnvelope, FaLock, FaUserPlus } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { gql, useMutation} from "@apollo/client";
 import './RegisterPage.css';
+
+const REGISTER = gql`
+    mutation Register($email: String!, $password: String!) {
+        register(email: $email, password: $password) {
+            user {
+                id
+                email
+            }
+        }
+    }
+`;
 
 const RegisterPage: FC = () => {
     const [email, setEmail] = useState("");
@@ -9,6 +21,8 @@ const RegisterPage: FC = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
+    const [register] = useMutation(REGISTER)
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -20,12 +34,21 @@ const RegisterPage: FC = () => {
 
         setLoading(true);
 
-         // Simula uma chamada async para o back-end
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        try {
+            const { data: _ } = await register({
+                variables: {
+                    email,
+                    password,
+                },
+            });
 
-        // Aqui você pode adicionar lógica para enviar os dados ao backend.
-        setLoading(false);
-        navigate("/dashboard"); // Redireciona após o registro
+            navigate("/dashboard"); // Redireciona após o registro
+        } catch (err: any) {
+            console.error("Erro ao registrar:", err);
+            alert("Erro ao registrar usuário.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -59,6 +82,7 @@ const RegisterPage: FC = () => {
                 placeholder="Senha"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                autoComplete="new-password"
                 required
                 disabled={loading}
                 />
@@ -73,6 +97,7 @@ const RegisterPage: FC = () => {
                 placeholder="Confirmar Senha"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                autoComplete="new-password"
                 required
                 disabled={loading}
                 />
@@ -95,7 +120,7 @@ const RegisterPage: FC = () => {
             </form>
 
             <p className="mt-4 mb-0 text-muted">
-            Já tem uma conta? <a href="/login" className="text-decoration-none">Entrar</a>
+            Já tem uma conta? <Link to='/login' className="text-decoration-none">Entrar</Link>
             </p>
         </div>
         </div>
