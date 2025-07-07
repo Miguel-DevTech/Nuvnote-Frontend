@@ -13,36 +13,43 @@ interface Task {
 interface TaskListProps {
     tasks: Task[];
     onDelete: (id: string) => void;
-    onToggleDone: (id: string, currentDone: boolean) => void;
-    onEdit: (id: string) => void;
+    onToggleDone: (id: string) => void;
     onSaveEdit: (id: string, newName: string) => void;
+    onStartEditing: (id: string) => void;
     editingId: string | null;
     loading: boolean;
 }
 
 const TaskList: FC<TaskListProps> = ({ 
-        tasks, 
-        onDelete, 
-        onToggleDone, 
-        onEdit, 
-        onSaveEdit, 
-        editingId, 
-        loading 
+    tasks,
+    onDelete,
+    onToggleDone,
+    onSaveEdit,
+    onStartEditing,
+    editingId,
+    loading
 
     }) => {
-
+        
     const [editedName, setEditedName] = useState('');
+
+    const handleSaveEdit = (id: string, newName: string) => {
+        if (newName.trim()) {
+            onSaveEdit(id, newName.trim());
+            setEditedName('');
+        }
+    }
 
     return (
         <div className="container mt-4">
         <h4 className="mb-3 text-dark">Minhas Tarefas</h4>
-        
+
         {loading ? (
-        <div className="d-flex justify-content-center align-items-center" style={{ height: '50vh' }}>
+            <div className="d-flex justify-content-center align-items-center" style={{ height: '50vh' }}>
             <div className="spinner-border text-primary" role="status">
                 <span className="visually-hidden">Carregando...</span>
             </div>
-        </div>
+            </div>
         ) : tasks.length === 0 ? (
             <p className="text-dark">Nenhuma tarefa adicionada ainda.</p>
         ) : (
@@ -52,16 +59,16 @@ const TaskList: FC<TaskListProps> = ({
                 const cardClass = `card shadow-sm border-0 transition ${task.done ? 'opacity-50' : ''}`;
 
                 return (
-                <motion.div 
-                    key={task.id} 
+                <motion.div
+                    key={task.id}
                     className="col"
                     initial={{ opacity: 1, scale: 1 }}
                     animate={{
-                        opacity: task.done ? 0.5 : 1,
-                        scale: task.done ? 0.90 : 1,
+                    opacity: task.done ? 0.5 : 1,
+                    scale: task.done ? 0.9 : 1,
                     }}
                     transition={{ duration: 0.3 }}
-                    >
+                >
                     <div className={cardClass}>
                     <div className="card-body d-flex justify-content-between align-items-center">
                         <div className="w-100">
@@ -72,18 +79,19 @@ const TaskList: FC<TaskListProps> = ({
                             value={editedName}
                             onChange={(e) => setEditedName(e.target.value)}
                             onKeyDown={(e) => {
-                                if (e.key === 'Enter') onSaveEdit(task.id, editedName);
+                                if (e.key === 'Enter') handleSaveEdit(task.id, editedName);
                             }}
                             autoFocus
                             />
                         ) : (
                             <h6
-                            className={`card-title mb-1 ${task.done ? 'text-decoration-line-through text-muted' : ''}`}
+                            className={`card-title mb-1 ${
+                                task.done ? 'text-decoration-line-through text-muted' : ''
+                            }`}
                             >
                             {task.name}
                             </h6>
                         )}
-
                         <small className="text-muted">Prioridade: {task.priority}</small>
                         </div>
 
@@ -93,10 +101,11 @@ const TaskList: FC<TaskListProps> = ({
                             {task.priority}
                         </span>
 
-                        <button 
-                            className="btn btn-sm btn-outline-success" 
-                            title="Concluir" 
-                            onClick={() => onToggleDone(task.id, task.done ?? false)}>
+                        <button
+                            className="btn btn-sm btn-outline-success"
+                            title="Concluir"
+                            onClick={() => onToggleDone(task.id)}
+                        >
                             <BsCheckLg />
                         </button>
 
@@ -104,7 +113,7 @@ const TaskList: FC<TaskListProps> = ({
                             <button
                             className="btn btn-sm btn-outline-primary"
                             title="Salvar"
-                            onClick={() => onSaveEdit(task.id, editedName)}
+                            onClick={() => handleSaveEdit(task.id, editedName)}
                             >
                             <BsSave />
                             </button>
@@ -114,14 +123,18 @@ const TaskList: FC<TaskListProps> = ({
                             title="Editar"
                             onClick={() => {
                                 setEditedName(task.name);
-                                onEdit(task.id);
+                                onStartEditing(task.id);
                             }}
                             >
                             <BsPencilSquare />
                             </button>
                         )}
 
-                        <button className="btn btn-sm btn-outline-danger" title="Excluir" onClick={() => onDelete(task.id)}>
+                        <button
+                            className="btn btn-sm btn-outline-danger"
+                            title="Excluir"
+                            onClick={() => onDelete(task.id)}
+                        >
                             <BsTrash />
                         </button>
                         </div>
@@ -139,13 +152,13 @@ const TaskList: FC<TaskListProps> = ({
 const getPriorityColor = (priority: string) => {
     switch (priority) {
         case 'alta':
-            return 'danger';
+        return 'danger';
         case 'media':
-            return 'warning';
+        return 'warning';
         case 'baixa':
-            return 'success';
+        return 'success';
         default:
-            return 'secondary';
+        return 'secondary';
     }
 };
 

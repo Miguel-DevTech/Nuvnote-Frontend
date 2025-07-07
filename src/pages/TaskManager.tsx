@@ -20,10 +20,41 @@ const TaskManager = () => {
     const [error, setError] = useState<string | null>(null);
     const [actionalLoading, setActionLoading] = useState(false);
 
-    const { data, loading, refetch } = useQuery(GET_TASKS);
-    const [addTaskMutation] = useMutation(ADD_TASK);
+    const { data, loading } = useQuery(GET_TASKS);
+
+
+    const [addTaskMutation] = useMutation(ADD_TASK, {
+        update(cache, { data: { addTask } }) {
+            const existing = cache.readQuery<{ tasks: Task[] }>({ query: GET_TASKS});
+            if(existing?.tasks && addTask) {
+                cache.writeQuery({
+                    query: GET_TASKS,
+                    data: {
+                        tasks: [...existing.tasks, addTask]
+                    }
+                })
+            }
+        }
+    });
+
     const [deleteTaskMutation] = useMutation(DELETE_TASK);
-    const [updateTaskMutation] = useMutation(UPDATE_TASK);
+
+    const [updateTaskMutation] = useMutation(UPDATE_TASK, {
+        update(cache, { data: { updateTask } }) {
+            const existing = cache.readQuery<{ tasks: Task[] }>({ query: GET_TASKS });
+            if (existing?.tasks && updateTask) {
+            cache.writeQuery({
+                query: GET_TASKS,
+                data: {
+                tasks: existing.tasks.map((t: Task) =>
+                    t.id === updateTask.id ? updateTask : t
+                ),
+                },
+            });
+            }
+        }
+    });
+
 
     const tasks: Task[] = data?.tasks ?? [];
 
@@ -32,11 +63,12 @@ const TaskManager = () => {
     );
 
     const addTask = async (name: string, priority: string) => {
+
         setError(null);
         setActionLoading(true);
+
         try {
             await addTaskMutation({ variables: { name, priority } });
-            await refetch();
         } catch (err: any) {
             setError('Failed to add task. Please try again.');
             console.log(err);
@@ -45,12 +77,19 @@ const TaskManager = () => {
         }
     };
 
-    const toggleDone = async (id: string, currentDone: boolean) => {
+    const toggleDone = async (id: string) => {
         setError(null);
         setActionLoading(true);
+
+        const task = tasks.find((t) => t.id === id);
+        if (!task) {
+            setError('Tarefa não encontrada.');
+            setActionLoading(false);
+            return;
+        }
+
         try {
-            await updateTaskMutation({ variables: { id, done: !currentDone } });
-            await refetch();
+            await updateTaskMutation({ variables: { id: task.id, done: !task.done } });
         } catch (err: any) {
             setError('Failed to update task. Please try again.');
             console.error(err);
@@ -60,18 +99,35 @@ const TaskManager = () => {
     };
 
     const deleteTask = async (id: string) => {
-        setError(null);
-        setActionLoading(true);
-        try {
-            await deleteTaskMutation({ variables: { id } });
-            await refetch();
-        } catch (err: any) {
-            setError('Failed to delete task. Please try again.');
-            console.error(err);
-        } finally {
-            setActionLoading(false);
-        }
-    };
+    setError(null);
+    setActionLoading(true);
+
+    try {
+        await deleteTaskMutation({
+            variables: { id },
+            update(cache, { data }) {
+                if (!data?.deleteTask) return;
+
+                const existing = cache.readQuery<{ tasks: Task[] }>({ query: GET_TASKS });
+                if (!existing) return;
+
+                cache.writeQuery({
+                    query: GET_TASKS,
+                    data: {
+                        tasks: existing.tasks.filter(task => task.id !== id),
+                    },
+                });
+            },
+        });
+
+        if (editingId === id) setEditingId(null);
+    } catch (err: any) {
+        setError('Failed to delete task. Please try again.');
+        console.error(err);
+    } finally {
+        setActionLoading(false);
+    }
+};
 
     const startEditing = (id: string) => {
         setEditingId(id);
@@ -80,17 +136,26 @@ const TaskManager = () => {
     const saveTaskEdit = async (id: string, newName: string) => {
         setError(null);
         setActionLoading(true);
+
+        const task = tasks.find(t => t.id === id);
+        if (!task) {
+            setError('Tarefa não encontrada.');
+            setActionLoading(false);
+            return;
+        }
+
         try {
-            await updateTaskMutation({ variables: { id, name: newName } });
+            await updateTaskMutation({ variables: { id, name: newName, done: task.done } });
             setEditingId(null);
-            await refetch();
         } catch (err: any) {
             setError('Failed to save task. Please try again.');
             console.error(err);
         } finally {
             setActionLoading(false);
-            }
+        }
     };
+
+    console.log('tasks', tasks)
 
 return (
     <div>
@@ -101,13 +166,16 @@ return (
             tasks={filteredTasks}
             onDelete={deleteTask}
             onToggleDone={toggleDone}
-            onEdit={startEditing}
-            onSaveEdit={saveTaskEdit}
+            onStartEditing={startEditing}  // ✅ Renomeado aqui
+            onSaveEdit={saveTaskEdit}      // ✅ Mantido
             editingId={editingId}
             loading={loading || actionalLoading}
+
         />
         </div>
     );
 };
+
+
 
 export default TaskManager;
