@@ -1,54 +1,68 @@
-# React + TypeScript + Vite
+# Tasknest>🐦
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+#### Acesse o projeto online: https://taskfy-react-frontend.vercel.app/
+#### Repositório do Back-End do projeto: https://github.com/Miguel-DevTech/Tasknest-Backend
 
-Currently, two official plugins are available:
+## Descrição
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Tasknest é um aplicativo completo de gerenciamento de tarefas, desenvolvido com foco em boas práticas de frontend moderno, integração com API GraphQL e autenticação via JWT.
+O app permite que usuários se registrem, façam login e gerenciem suas tarefas com edição, marcação de conclusão, prioridade e busca por nome.
+Este projeto foi criado com o objetivo de consolidar conhecimentos em React, Apollo Client, GraphQL e JWT(JSON Web Token), utilizando uma arquitetura escalável, segura e alinhada com o mercado.
 
-## Expanding the ESLint configuration
+## Funcionalidades
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- ✅ Registro e login de usuários com autenticação por JWT (token via cookie).
+- ✅ Tela principal com listagem de tarefas do usuário autenticado.
+- ✅ Criação, edição, exclusão e marcação de tarefas como feitas.
+- ✅ Filtro de busca por nome.
+- ✅ Prioridades visuais nas tarefas (Alta, Média, Baixa).
+- ✅ Interface responsiva e agradável.
+- 🔄 Navegação protegida por sessão (autenticação persistente).
+- 🚧 Navegação por menu e outras rotas em desenvolvimento.
+  
+## Tecnologias Usadas
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+- **React**: Biblioteca principal para construção da interface;
+- **TypeScript**: Tipagem estática para maior robustez e segurança;
+- **Apollo Client**: Gerenciamento de estado e integração com GraphQL;
+- **GraphQL**: API moderna com queries e mutations (via backend Node.js);
+- **Bootstrap 5**: Estilização responsiva e componentes prontos;
+- **React Router** Navegação entre páginas protegidas e públicas.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Instalação e Execução
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+Para rodar o projeto localmente, siga os passos abaixo:
+
+1. Clone o repositório:
+
+   ```bash
+   git clone https://github.com/Miguel-DevTech/Tasknest-Frontend/
+
+2. Navegue até a pasta do projeto:
+
+   ```bash
+   cd tasknest-frontend
+   
+3. Instale as dependências do projeto:
+
+   ```bash
+   npm install
+
+4. Execute o aplicativo:'
+  ```bash
+   npm run dev
+  ```
+
+ ## Aprendizado 🧠
+ Durante o desenvolvimento desse projeto, aprendi:
+ - Integração segura entre frontend e GraphQL com cookies HTTP-only;
+ - Gerenciamento de cache e otimização com Apollo Client;
+ - Criação de formulários controlados com validação;
+ - Tratamento de erros, loading states e feedback visual
+
+## Contato 📞
+Gostaria de entrar em contato comigo?
+- LinkedIn: https://www.linkedin.com/in/miguel-nogueira-de-amorim/
+- GitHub: https://github.com/Miguel-DevTech/
+- Email: miguelnogueiraneto@gmail.com
