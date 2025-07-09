@@ -1,5 +1,5 @@
 // src/pages/ TaskManager.tsx
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_TASKS, ADD_TASK, DELETE_TASK, UPDATE_TASK } from '../graphql/queries';
 
@@ -20,7 +20,9 @@ const TaskManager = () => {
     const [error, setError] = useState<string | null>(null);
     const [actionalLoading, setActionLoading] = useState(false);
 
-    const { data, loading } = useQuery(GET_TASKS);
+    const { data, loading, refetch } = useQuery(GET_TASKS, {
+        fetchPolicy: 'network-only', // 🔁 ignora cache antigo
+    });
 
 
     const [addTaskMutation] = useMutation(ADD_TASK, {
@@ -155,6 +157,9 @@ const TaskManager = () => {
         }
     };
 
+    useEffect(() => {
+        refetch();
+    }, []);
     console.log('tasks', tasks)
 
 return (

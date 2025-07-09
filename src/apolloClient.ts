@@ -2,13 +2,14 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 
 const httpLink = createHttpLink({
-    uri: 'https://taskfy-react-backend.onrender.com/graphql', // ✅ link do back-end já em produção
-    credentials: 'include', // ✅ necessário para enviar cookies com requisições
+    uri: 'https://tasknest-backend-k3lu.onrender.com/graphql',
+    credentials: 'include',
 });
 
 const client = new ApolloClient({
     link: httpLink,
     cache: new InMemoryCache(),
+    connectToDevTools: true,
 });
 
 export default client;

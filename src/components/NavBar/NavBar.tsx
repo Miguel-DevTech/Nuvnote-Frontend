@@ -17,7 +17,7 @@ const NavBar = ({ search, onSearchChange }: NavBarProps) => {
     return (
         <nav className="navbar navbar-expand-lg px-3">
             <div className="container-fluid">
-                <a className="navbar-brand text-white" href="#"> TASKFLY </a>
+                <a className="navbar-brand text-white" href="#"> TASKNEST🐦 </a>
 
                 <button
                     className="navbar-toggler"
@@ -33,9 +33,9 @@ const NavBar = ({ search, onSearchChange }: NavBarProps) => {
 
                 <div className="collapse navbar-collapse justify-content-end" id="navbarContent">
                     <div className="d-flex flex-column flex-lg-row align-items-center gap-3 mt-3 mt-lg-0 w-100 justify-content-lg-end">
-                        <span className="text-light">{hour.toLocaleTimeString()}</span>
+                        <span className="text-light">{hour.toLocaleTimeString()}</span> 
 
-                        <form className="d-flex w-25 w-lg-auto" role="search" onSubmit={(e) => e.preventDefault()}>
+                        <form className="d-flex w-auto w-lg-auto" role="search" onSubmit={(e) => e.preventDefault()}>
                             <input
                                 className="form-control me-2"
                                 type="search"

@@ -1,8 +1,9 @@
 import { type FC, useState, type FormEvent } from "react";
 import { FaEnvelope, FaLock, FaUserPlus } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { gql, useMutation} from "@apollo/client";
 import './RegisterPage.css';
+import client from "../../apolloClient";
 
 const REGISTER = gql`
     mutation Register($email: String!, $password: String!) {
@@ -20,7 +21,6 @@ const RegisterPage: FC = () => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
 
     const [register] = useMutation(REGISTER)
 
@@ -42,7 +42,10 @@ const RegisterPage: FC = () => {
                 },
             });
 
-            navigate("/dashboard"); // Redireciona após o registro
+            client.refetchQueries({ include: "all" })
+
+            window.location.href = '/dashboard';
+
         } catch (err: any) {
             console.error("Erro ao registrar:", err);
             alert("Erro ao registrar usuário.");

@@ -19,3 +19,14 @@
     text-decoration: line-through;
     transform: scale(0.98);
 }
+
+@media (max-width: 576px) {
+    .task-card-buttons {
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+
+    .task-card-buttons button {
+        flex: 1 1 48%;
+    }
+}

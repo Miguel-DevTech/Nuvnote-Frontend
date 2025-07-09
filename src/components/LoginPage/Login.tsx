@@ -1,8 +1,8 @@
 // components/LoginPage/Login.tsx
 import { type FC, useState, type FormEvent } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FaEnvelope, FaLock, FaSignInAlt } from "react-icons/fa";
-import { gql, useMutation } from '@apollo/client';
+import { gql, useApolloClient, useMutation} from '@apollo/client';
 import './Login.css';
 
 // GraphQL Mutation
@@ -17,13 +17,12 @@ const LOGIN = gql`
     }
 `;
 
-
 const LoginPage: FC = () => {
     const [userEmail, setUserEmail] = useState('');
     const [userPassword, setUserPassword] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const navigate = useNavigate();
+    const client = useApolloClient();
 
     const [login] = useMutation(LOGIN);
 
@@ -38,10 +37,13 @@ const LoginPage: FC = () => {
                 email: userEmail,
                 password: userPassword,
             },
-        });
+            });
 
+            await client.clearStore();           // 🧹 limpa o cache antigo
+            await client.refetchQueries({ include: 'all' });
 
-            navigate('/dashboard'); // 🍪 token já está no cookie
+            window.location.href = '/dashboard';
+
         } catch (err: any) {
             console.error('Login failed:', err);
             if (err?.graphQLErrors?.length) {

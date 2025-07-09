@@ -70,75 +70,77 @@ const TaskList: FC<TaskListProps> = ({
                     transition={{ duration: 0.3 }}
                 >
                     <div className={cardClass}>
-                    <div className="card-body d-flex justify-content-between align-items-center">
-                        <div className="w-100">
-                        {isEditing ? (
-                            <input
-                            type="text"
-                            className="form-control mb-2"
-                            value={editedName}
-                            onChange={(e) => setEditedName(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') handleSaveEdit(task.id, editedName);
-                            }}
-                            autoFocus
-                            />
-                        ) : (
-                            <h6
-                            className={`card-title mb-1 ${
-                                task.done ? 'text-decoration-line-through text-muted' : ''
-                            }`}
-                            >
-                            {task.name}
-                            </h6>
-                        )}
-                        <small className="text-muted">Prioridade: {task.priority}</small>
+                        <div className="card-body">
+                            <div className="row">
+                                <div className="col-12 col-sm-8">
+                                {isEditing ? (
+                                    <input
+                                    type="text"
+                                    className="form-control mb-2"
+                                    value={editedName}
+                                    onChange={(e) => setEditedName(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') handleSaveEdit(task.id, editedName);
+                                    }}
+                                    autoFocus
+                                    />
+                                ) : (
+                                    <h6
+                                    className={`card-title mb-1 ${
+                                        task.done ? 'text-decoration-line-through text-muted' : ''
+                                    }`}
+                                    >
+                                    {task.name}
+                                    </h6>
+                                )}
+
+                                </div>
+
+                                <div className="col-12 col-sm-4 mt-2 mt-sm-0 d-flex flex-wrap gap-2 justify-content-end align-items-center">
+                                <span className={`badge bg-${getPriorityColor(task.priority)} d-flex align-items-center gap-1`}>
+                                    <BsFlagFill size={14} />
+                                    {task.priority}
+                                </span>
+
+                                <button
+                                    className="btn btn-sm btn-outline-success"
+                                    title="Concluir"
+                                    onClick={() => onToggleDone(task.id)}
+                                >
+                                    <BsCheckLg />
+                                </button>
+
+                                {isEditing ? (
+                                    <button
+                                    className="btn btn-sm btn-outline-primary"
+                                    title="Salvar"
+                                    onClick={() => handleSaveEdit(task.id, editedName)}
+                                    >
+                                    <BsSave />
+                                    </button>
+                                ) : (
+                                    <button
+                                    className="btn btn-sm btn-outline-primary"
+                                    title="Editar"
+                                    onClick={() => {
+                                        setEditedName(task.name);
+                                        onStartEditing(task.id);
+                                    }}
+                                    >
+                                    <BsPencilSquare />
+                                    </button>
+                                )}
+
+                                <button
+                                    className="btn btn-sm btn-outline-danger"
+                                    title="Excluir"
+                                    onClick={() => onDelete(task.id)}
+                                >
+                                    <BsTrash />
+                                </button>
+                                </div>
+                            </div>
                         </div>
-
-                        <div className="d-flex gap-2 align-items-center ms-3">
-                        <span className={`badge bg-${getPriorityColor(task.priority)} d-flex align-items-center gap-1`}>
-                            <BsFlagFill size={14} />
-                            {task.priority}
-                        </span>
-
-                        <button
-                            className="btn btn-sm btn-outline-success"
-                            title="Concluir"
-                            onClick={() => onToggleDone(task.id)}
-                        >
-                            <BsCheckLg />
-                        </button>
-
-                        {isEditing ? (
-                            <button
-                            className="btn btn-sm btn-outline-primary"
-                            title="Salvar"
-                            onClick={() => handleSaveEdit(task.id, editedName)}
-                            >
-                            <BsSave />
-                            </button>
-                        ) : (
-                            <button
-                            className="btn btn-sm btn-outline-primary"
-                            title="Editar"
-                            onClick={() => {
-                                setEditedName(task.name);
-                                onStartEditing(task.id);
-                            }}
-                            >
-                            <BsPencilSquare />
-                            </button>
-                        )}
-
-                        <button
-                            className="btn btn-sm btn-outline-danger"
-                            title="Excluir"
-                            onClick={() => onDelete(task.id)}
-                        >
-                            <BsTrash />
-                        </button>
-                        </div>
-                    </div>
                     </div>
                 </motion.div>
                 );
