@@ -17,7 +17,7 @@ const NavBar = ({ search, onSearchChange }: NavBarProps) => {
     return (
         <nav className="navbar navbar-expand-lg px-3">
             <div className="container-fluid">
-                <a className="navbar-brand text-white" href="#"> TASKNEST🐦 </a>
+                <a className="navbar-brand text-white" href="#"> Nuvnote📓 </a>
 
                 <button
                     className="navbar-toggler"
