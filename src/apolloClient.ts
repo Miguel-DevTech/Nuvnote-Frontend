@@ -2,7 +2,7 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 
 const httpLink = createHttpLink({
-    uri: 'https://tasknest-backend-k3lu.onrender.com/graphql',
+    uri: 'https://nuvnote-backend.onrender.com/graphql',
     credentials: 'include',
 });
 
